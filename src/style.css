@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: false;
+}
+
+@plugin "daisyui/theme" {
+  name: "dathletic";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(97.8% 0.007 305);
+  --color-base-300: oklch(93.5% 0.014 305);
+  --color-base-content: oklch(23% 0.03 305);
+  --color-primary: #8e1cdb;
+  --color-primary-content: oklch(99% 0.005 305);
+  --color-secondary: #f2e8ff;
+  --color-secondary-content: #7522b3;
+  --color-accent: #c184ff;
+  --color-accent-content: #400a66;
+  --color-neutral: oklch(24% 0.04 305);
+  --color-neutral-content: oklch(98% 0.005 305);
+  --color-info: oklch(68% 0.14 235);
+  --color-info-content: oklch(98% 0.01 235);
+  --color-success: oklch(66% 0.16 150);
+  --color-success-content: oklch(98% 0.01 150);
+  --color-warning: oklch(82% 0.16 85);
+  --color-warning-content: oklch(25% 0.05 85);
+  --color-error: oklch(62% 0.22 25);
+  --color-error-content: oklch(98% 0.01 25);
+
+  --radius-selector: 2rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  --border: 1px;
+
+  --depth: 0;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "dathletic-dark";
+  default: false;
+  prefersdark: false;
+  color-scheme: dark;
+
+  --color-base-100: oklch(21% 0.012 305);
+  --color-base-200: oklch(18% 0.012 305);
+  --color-base-300: oklch(27% 0.018 305);
+  --color-base-content: oklch(94% 0.01 305);
+  --color-primary: #b157fe;
+  --color-primary-content: oklch(18% 0.03 305);
+  --color-secondary: oklch(30% 0.08 305);
+  --color-secondary-content: #d7b6fd;
+  --color-accent: #c184ff;
+  --color-accent-content: #400a66;
+  --color-neutral: oklch(32% 0.02 305);
+  --color-neutral-content: oklch(96% 0.005 305);
+  --color-info: oklch(70% 0.14 235);
+  --color-info-content: oklch(18% 0.02 235);
+  --color-success: oklch(70% 0.16 150);
+  --color-success-content: oklch(18% 0.02 150);
+  --color-warning: oklch(82% 0.16 85);
+  --color-warning-content: oklch(22% 0.05 85);
+  --color-error: oklch(66% 0.21 25);
+  --color-error-content: oklch(18% 0.02 25);
+
+  --radius-selector: 2rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  --border: 1px;
+
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Item activo del menú lateral: violeta suave en lugar del neutral por defecto */
+.menu li > .menu-active {
+  background-color: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Activo del dock en violeta */
+.dock > .dock-active {
+  color: var(--color-primary);
+}
