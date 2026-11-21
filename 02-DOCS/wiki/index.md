@@ -4,3 +4,4 @@
 - Harness: [perfil](harness/user-profile.md) · [plan instalado](harness/installation-plan.md) · [decisiones](harness/decisions.md)
 - Funcionalidades (FTD):
   - [Paleta violeta y logo](ftd/paleta-violeta-y-logo.md)
+  - [Navegación en la barra superior](ftd/navegacion-superior.md)
