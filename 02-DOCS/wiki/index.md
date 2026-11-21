@@ -6,3 +6,4 @@
   - [Paleta violeta y logo](ftd/paleta-violeta-y-logo.md)
   - [Navegación en la barra superior](ftd/navegacion-superior.md)
   - [Fase 1A — Pie, introducción y guardado](ftd/fase1a-pie-e-introduccion.md)
+  - [Fase 1B — Lista de ejercicios](ftd/fase1b-lista-de-ejercicios.md)
