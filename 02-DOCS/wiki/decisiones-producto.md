@@ -2,6 +2,16 @@
 
 Decisiones tomadas por la persona sobre DAthletic. La más reciente arriba.
 
+## 2026-11-21 — Guía, logo en modo oscuro y fase 1
+- **Guía de ideas:** `Guia DAthletic.docx` queda **solo en la computadora**, fuera del repo público (está en `.gitignore`).
+- **Logo en modo oscuro:** se deja como está por ahora (contraste bajo de las partes más oscuras, ya medido).
+- **Fase 1:** se arranca, por FTD en dos partes (A: pie + introducción; B: ejercicios + guardado).
+  rsc mantiene ASDD apagado (`rsc reassess` → `RSC_REASSESSMENT_NO_CHANGE`).
+- **Ejercicios:** lista base (~30 ejercicios comunes) **y** ejercicios propios de la persona, guardados en el navegador.
+- **Introducción:** bloque de bienvenida **arriba de Inicio**, se puede cerrar y no vuelve a aparecer.
+- **Créditos del pie:** solo **«© DAthletic»**, sin nombre de persona (repo público).
+- **Modelo 3D (hasta la fase 5):** recuadro «Modelo 3D próximamente», sin imágenes de terceros.
+
 ## 2026-11-21 — Puntos de la guía de ideas
 Contexto: la guía (`Guia DAthletic.docx`) proponía cosas distintas a lo ya construido.
 

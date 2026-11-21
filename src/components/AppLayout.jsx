@@ -4,6 +4,7 @@ import Icon from "./Icon.jsx";
 import Logo from "./Logo.jsx";
 import ThemeToggle from "./ThemeToggle.jsx";
 import NewRoutineModal from "./NewRoutineModal.jsx";
+import Footer from "./Footer.jsx";
 import { navItems } from "../lib/nav.js";
 
 export default function AppLayout() {
@@ -20,9 +21,10 @@ export default function AppLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-28 lg:px-8 lg:pt-8 lg:pb-12">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-10 lg:px-8 lg:pt-8 lg:pb-12">
         <Outlet context={{ openNewRoutine }} />
       </main>
+      <Footer />
       <Dock />
       <NewRoutineModal ref={modalRef} />
     </div>

@@ -1,5 +1,6 @@
 import { Link, useOutletContext } from "react-router";
 import Icon from "../components/Icon.jsx";
+import Intro from "../components/Intro.jsx";
 import { EmptyState, Panel, StatCard } from "../components/ui.jsx";
 
 const weekDays = ["L", "M", "X", "J", "V", "S", "D"];
@@ -15,6 +16,7 @@ export default function Home() {
 
   return (
     <section className="space-y-6">
+      <Intro />
       <div>
         <p className="text-sm capitalize text-base-content/60">{today}</p>
         <h1 className="text-2xl font-bold tracking-tight lg:text-3xl">{greeting()}, atleta</h1>
