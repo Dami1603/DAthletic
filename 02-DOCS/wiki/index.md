@@ -8,3 +8,4 @@
   - [Fase 1A — Pie, introducción y guardado](ftd/fase1a-pie-e-introduccion.md)
   - [Fase 1B — Lista de ejercicios](ftd/fase1b-lista-de-ejercicios.md)
   - [Fase 2A — Catálogo de rutinas](ftd/fase2a-catalogo-de-rutinas.md)
+  - [Fase 2B — Rutinas propias](ftd/fase2b-rutinas-propias.md)

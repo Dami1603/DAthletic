@@ -3,12 +3,10 @@ import { NavLink, Outlet, useLocation } from "react-router";
 import Icon from "./Icon.jsx";
 import Logo from "./Logo.jsx";
 import ThemeToggle from "./ThemeToggle.jsx";
-import NewRoutineModal from "./NewRoutineModal.jsx";
 import Footer from "./Footer.jsx";
 import { navItems } from "../lib/nav.js";
 
 export default function AppLayout() {
-  const modalRef = useRef(null);
   const { pathname } = useLocation();
 
   // Al cambiar de página, volver arriba.
@@ -16,17 +14,14 @@ export default function AppLayout() {
     window.scrollTo({ top: 0 });
   }, [pathname]);
 
-  const openNewRoutine = () => modalRef.current?.showModal();
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-10 lg:px-8 lg:pt-8 lg:pb-12">
-        <Outlet context={{ openNewRoutine }} />
+        <Outlet />
       </main>
       <Footer />
       <Dock />
-      <NewRoutineModal ref={modalRef} />
     </div>
   );
 }

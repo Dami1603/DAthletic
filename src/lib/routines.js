@@ -110,13 +110,76 @@ export function buildWeek(routine, weekdays) {
   });
 }
 
+// ---------- Rutinas propias ----------
+
+export const MAX_DAYS = 7;
+export const MAX_SETS = 10;
+const newId = () => `propia-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+const clean = (s) => (typeof s === "string" ? s.trim() : "");
+
+/**
+ * Arma una rutina propia limpia a partir del formulario. Si se pasa `id`, la conserva (edición).
+ * Quita filas sin ejercicio y días vacíos; acota series a 1..MAX_SETS y descanso a ≥ 0.
+ * El resultado puede no ser válido (p. ej. sin días): comprobar con isValidRoutine antes de guardar.
+ */
+export function makeCustomRoutine({ name, goal, level, ages = [], description = "", days = [] }, id) {
+  const cleanDays = days
+    .slice(0, MAX_DAYS)
+    .map((d, i) => ({
+      name: clean(d?.name) || `Día ${i + 1}`,
+      exercises: (Array.isArray(d?.exercises) ? d.exercises : [])
+        .filter((x) => x && typeof x.exerciseId === "string" && x.exerciseId)
+        .map((x) => {
+          const sets = Math.min(MAX_SETS, Math.max(1, Math.round(Number(x.sets)) || 1));
+          const rest = Math.max(0, Math.round(Number(x.rest)) || 0);
+          return { exerciseId: x.exerciseId, sets, reps: clean(String(x.reps ?? "")) || "10", rest };
+        }),
+    }))
+    .filter((d) => d.exercises.length > 0);
+
+  return {
+    id: id ?? newId(),
+    custom: true,
+    kind: "propia",
+    name: clean(name),
+    goal,
+    level,
+    ages: AGES.map((a) => a.id).filter((a) => ages.includes(a)),
+    description: clean(description),
+    days: cleanDays,
+  };
+}
+
+const isArray = (v) => Array.isArray(v);
+const NO_CUSTOM = [];
+const isValidCustom = (r) => isValidRoutine(r) && r.kind === "propia";
+
 // ---------- Hooks ----------
 
-/** Lista de rutinas (base; las propias se suman en la fase 2B). */
+/** Rutinas base + propias (guardadas en el navegador), con alta, edición y borrado. */
 export function useRoutines() {
-  const routines = baseRoutines;
+  const [stored, setStored] = usePersistentState(KEYS.customRoutines, NO_CUSTOM, isArray);
+  const custom = useMemo(() => stored.filter(isValidCustom), [stored]);
+  const routines = useMemo(() => [...baseRoutines, ...custom], [custom]);
   const byId = useMemo(() => Object.fromEntries(routines.map((r) => [r.id, r])), [routines]);
-  return { routines, byId };
+
+  /** Crea (sin id) o reemplaza (con id de una propia) una rutina. Devuelve la rutina o null si no es válida. */
+  const saveRoutine = useCallback(
+    (data, id) => {
+      const r = makeCustomRoutine(data, id);
+      if (!isValidCustom(r)) return null;
+      setStored((prev) => {
+        const list = prev.filter(isValidCustom);
+        return list.some((x) => x.id === r.id) ? list.map((x) => (x.id === r.id ? r : x)) : [...list, r];
+      });
+      return r;
+    },
+    [setStored],
+  );
+
+  const removeRoutine = useCallback((id) => setStored((prev) => prev.filter((x) => isValidCustom(x) && x.id !== id)), [setStored]);
+
+  return { routines, byId, saveRoutine, removeRoutine };
 }
 
 /**
@@ -137,6 +200,8 @@ export function useActiveRoutine(byId) {
     [setStored],
   );
   const deactivate = useCallback(() => setStored(null), [setStored]);
+  /** Deja de usar la rutina guardada si es `routineId` (aunque hoy no se pueda mostrar por no coincidir los días). */
+  const clearIfRoutine = useCallback((routineId) => setStored((prev) => (prev?.routineId === routineId ? null : prev)), [setStored]);
 
-  return { active, activate, deactivate };
+  return { active, activate, deactivate, clearIfRoutine };
 }

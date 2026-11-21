@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Icon from "../Icon.jsx";
 import WeekdayPicker from "./WeekdayPicker.jsx";
 import { RoutineBadges } from "./RoutineCard.jsx";
 import { AGES, WEEKDAYS, labelOf, suggestedWeekdays } from "../../lib/routines.js";
@@ -11,7 +12,7 @@ const dayList = (weekdays) => weekdays.map((d) => WEEKDAYS[d].short).join(", ");
  * `routine` puede ser null (ventana cerrada). `openKey` cambia en cada apertura para reiniciar el contenido
  * (va en el contenido, no en el <dialog>: re-montar el <dialog> lo cerraría recién abierto).
  */
-export default function RoutineDetailModal({ ref, openKey, routine, exercisesById, active, onActivate, onDeactivate }) {
+export default function RoutineDetailModal({ ref, openKey, routine, exercisesById, active, onActivate, onDeactivate, onEdit, onDelete }) {
   const close = () => ref.current?.close();
 
   return (
@@ -25,6 +26,13 @@ export default function RoutineDetailModal({ ref, openKey, routine, exercisesByI
             active={active}
             onActivate={(weekdays) => { onActivate(routine.id, weekdays); close(); }}
             onDeactivate={() => { onDeactivate(); close(); }}
+            onEdit={() => { close(); onEdit(routine); }}
+            onDelete={() => {
+              if (window.confirm(`¿Borrar «${routine.name}»? No se puede deshacer.`)) {
+                close();
+                onDelete(routine.id);
+              }
+            }}
             onClose={close}
           />
         )}
@@ -36,7 +44,7 @@ export default function RoutineDetailModal({ ref, openKey, routine, exercisesByI
   );
 }
 
-function RoutineDetail({ routine, exercisesById, active, onActivate, onDeactivate, onClose }) {
+function RoutineDetail({ routine, exercisesById, active, onActivate, onDeactivate, onEdit, onDelete, onClose }) {
   const isActive = active?.routine.id === routine.id;
   const n = routine.days.length;
   const [picking, setPicking] = useState(false);
@@ -50,6 +58,15 @@ function RoutineDetail({ routine, exercisesById, active, onActivate, onDeactivat
           <h3 className="text-xl font-bold">{routine.name}</h3>
           <p className="text-sm text-base-content/70">{routine.description}</p>
           <p className="text-xs text-base-content/50">Edades: {routine.ages.map((a) => labelOf(AGES, a)).join(" · ")}</p>
+          {routine.custom && (
+            <div className="flex gap-2 pt-1">
+              <button className="btn btn-sm" onClick={onEdit}>Editar</button>
+              <button className="btn btn-sm btn-error btn-outline" onClick={onDelete}>
+                <Icon name="trash" className="size-4" />
+                Borrar
+              </button>
+            </div>
+          )}
         </div>
         <button className="btn btn-ghost btn-sm btn-circle" aria-label="Cerrar" onClick={onClose}>✕</button>
       </div>

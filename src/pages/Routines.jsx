@@ -1,9 +1,9 @@
 import { useMemo, useRef, useState } from "react";
-import { useOutletContext } from "react-router";
 import Icon from "../components/Icon.jsx";
 import { EmptyState, PageHeader, Panel } from "../components/ui.jsx";
 import RoutineCard from "../components/routines/RoutineCard.jsx";
 import RoutineDetailModal from "../components/routines/RoutineDetailModal.jsx";
+import RoutineFormModal from "../components/routines/RoutineFormModal.jsx";
 import { useExercises } from "../lib/exercises.js";
 import { AGES, GOALS, LEVELS, WEEKDAYS, filterRoutines, useActiveRoutine, useRoutines } from "../lib/routines.js";
 
@@ -16,15 +16,16 @@ const NO_FILTERS = { goal: "", level: "", age: "", days: "" };
 const DAY_OPTIONS = [2, 3, 4, 5, 6];
 
 export default function Routines() {
-  const { openNewRoutine } = useOutletContext();
-  const { routines, byId } = useRoutines();
-  const { byId: exercisesById } = useExercises();
-  const { active, activate, deactivate } = useActiveRoutine(byId);
+  const { routines, byId, saveRoutine, removeRoutine } = useRoutines();
+  const { exercises, byId: exercisesById } = useExercises();
+  const { active, activate, deactivate, clearIfRoutine } = useActiveRoutine(byId);
 
   const [tab, setTab] = useState("popular");
   const [filters, setFilters] = useState(NO_FILTERS);
   const [selected, setSelected] = useState({ id: null, n: 0 }); // n: cada apertura reinicia el detalle
   const detailRef = useRef(null);
+  const [formState, setFormState] = useState({ initial: null, n: 0 }); // n: cada apertura empieza limpia
+  const formRef = useRef(null);
 
   const visible = useMemo(() => filterRoutines(routines, { ...filters, kind: tab }), [routines, filters, tab]);
   const hasFilters = Object.values(filters).some(Boolean);
@@ -32,13 +33,31 @@ export default function Routines() {
 
   const openDetail = (id) => {
     setSelected((s) => ({ id, n: s.n + 1 }));
-    detailRef.current?.showModal();
+    if (!detailRef.current?.open) detailRef.current?.showModal();
+  };
+
+  const openForm = (initial = null) => {
+    setFormState((s) => ({ initial, n: s.n + 1 }));
+    formRef.current?.showModal();
+  };
+
+  const handleDelete = (id) => {
+    clearIfRoutine(id); // borrar la rutina activa la deja de usar
+    removeRoutine(id);
+  };
+
+  // Si se edita la rutina activa y cambia la cantidad de días, deja de estar activa (hay que volver a elegir días).
+  const handleSave = (data, id) => {
+    const before = id ? byId[id] : null;
+    const saved = saveRoutine(data, id);
+    if (saved && before && saved.days.length !== before.days.length) clearIfRoutine(id);
+    return saved;
   };
 
   return (
     <section className="space-y-6">
       <PageHeader title="Rutinas" subtitle="Elegí una rutina según tu objetivo, tu edad y tu experiencia, y los días que vas a entrenar.">
-        <button className="btn btn-primary" onClick={openNewRoutine}>
+        <button className="btn btn-primary" onClick={() => openForm()}>
           <Icon name="plus" className="size-4" />
           Crear rutina
         </button>
@@ -98,7 +117,9 @@ export default function Routines() {
       ) : (
         <div className="card bg-base-100 shadow-sm">
           {tab === "propia" && !hasFilters ? (
-            <EmptyState icon="routines" title="Todavía no armaste rutinas propias" description="Muy pronto vas a poder crear tus rutinas con los ejercicios de la lista." />
+            <EmptyState icon="routines" title="Todavía no armaste rutinas propias" description="Armá la tuya eligiendo ejercicios de la lista.">
+              <button className="btn btn-sm" onClick={() => openForm()}>Crear rutina</button>
+            </EmptyState>
           ) : (
             <EmptyState icon="search" title="No hay rutinas con esos filtros" description="Probá quitando algún filtro.">
               <button className="btn btn-sm" onClick={() => setFilters(NO_FILTERS)}>Limpiar filtros</button>
@@ -134,6 +155,21 @@ export default function Routines() {
         active={active}
         onActivate={activate}
         onDeactivate={deactivate}
+        onEdit={openForm}
+        onDelete={handleDelete}
+      />
+      <RoutineFormModal
+        ref={formRef}
+        openKey={formState.n}
+        initial={formState.initial}
+        exercises={exercises}
+        activeRoutineId={active?.routine.id}
+        onSave={handleSave}
+        onSaved={(r) => {
+          setTab("propia");
+          setFilters(NO_FILTERS);
+          openDetail(r.id);
+        }}
       />
     </section>
   );
