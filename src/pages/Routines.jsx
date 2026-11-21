@@ -1,83 +1,140 @@
+import { useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
 import Icon from "../components/Icon.jsx";
-import { PageHeader, Panel } from "../components/ui.jsx";
+import { EmptyState, PageHeader, Panel } from "../components/ui.jsx";
+import RoutineCard from "../components/routines/RoutineCard.jsx";
+import RoutineDetailModal from "../components/routines/RoutineDetailModal.jsx";
+import { useExercises } from "../lib/exercises.js";
+import { AGES, GOALS, LEVELS, WEEKDAYS, filterRoutines, useActiveRoutine, useRoutines } from "../lib/routines.js";
 
-const categories = ["Fuerza", "Hipertrofia", "Cardio", "Movilidad"];
-const weekDays = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-const placeholders = [1, 2];
+const TABS = [
+  { id: "popular", label: "Populares" },
+  { id: "famosa", label: "Famosas" },
+  { id: "propia", label: "Mis rutinas" },
+];
+const NO_FILTERS = { goal: "", level: "", age: "", days: "" };
+const DAY_OPTIONS = [2, 3, 4, 5, 6];
 
 export default function Routines() {
   const { openNewRoutine } = useOutletContext();
+  const { routines, byId } = useRoutines();
+  const { byId: exercisesById } = useExercises();
+  const { active, activate, deactivate } = useActiveRoutine(byId);
+
+  const [tab, setTab] = useState("popular");
+  const [filters, setFilters] = useState(NO_FILTERS);
+  const [selected, setSelected] = useState({ id: null, n: 0 }); // n: cada apertura reinicia el detalle
+  const detailRef = useRef(null);
+
+  const visible = useMemo(() => filterRoutines(routines, { ...filters, kind: tab }), [routines, filters, tab]);
+  const hasFilters = Object.values(filters).some(Boolean);
+  const setFilter = (key) => (e) => setFilters((f) => ({ ...f, [key]: e.target.value }));
+
+  const openDetail = (id) => {
+    setSelected((s) => ({ id, n: s.n + 1 }));
+    detailRef.current?.showModal();
+  };
 
   return (
     <section className="space-y-6">
-      <PageHeader title="Rutinas" subtitle="Organizá tus entrenamientos por días y objetivos.">
+      <PageHeader title="Rutinas" subtitle="Elegí una rutina según tu objetivo, tu edad y tu experiencia, y los días que vas a entrenar.">
         <button className="btn btn-primary" onClick={openNewRoutine}>
           <Icon name="plus" className="size-4" />
-          Nueva rutina
+          Crear rutina
         </button>
       </PageHeader>
 
-      <form className="filter">
-        <input className="btn btn-sm btn-square" type="reset" value="×" aria-label="Limpiar filtro" />
-        {categories.map((c) => (
-          <input key={c} className="btn btn-sm" type="radio" name="routine-filter" aria-label={c} />
-        ))}
-      </form>
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <button
-          className="card card-dash min-h-56 border-base-300 bg-base-100 transition hover:border-primary hover:text-primary"
-          onClick={openNewRoutine}
-        >
-          <div className="card-body items-center justify-center text-center">
-            <div className="grid size-12 place-items-center rounded-full bg-base-200">
-              <Icon name="plus" className="size-6" />
+      {active && (
+        <div className="card border border-primary/30 bg-secondary/50">
+          <div className="card-body flex-row flex-wrap items-center justify-between gap-3 p-4">
+            <div>
+              <p className="text-sm text-base-content/60">Tu rutina activa</p>
+              <p className="font-semibold">{active.routine.name}</p>
+              <p className="text-sm text-base-content/70">{active.weekdays.map((d) => WEEKDAYS[d].label).join(", ")}</p>
             </div>
-            <p className="font-semibold">Crear rutina</p>
-            <p className="text-sm text-base-content/50">Empezá desde cero</p>
+            <button className="btn btn-sm" onClick={() => openDetail(active.routine.id)}>Ver rutina</button>
           </div>
-        </button>
+        </div>
+      )}
 
-        {placeholders.map((n) => (
-          <RoutineCard key={n} />
+      <div role="tablist" className="tabs tabs-border">
+        {TABS.map((t) => (
+          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`tab ${tab === t.id ? "tab-active" : ""}`} onClick={() => setTab(t.id)}>
+            {t.label}
+          </button>
         ))}
       </div>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <select className="select w-full" value={filters.goal} onChange={setFilter("goal")} aria-label="Objetivo">
+          <option value="">Todos los objetivos</option>
+          {GOALS.map((g) => <option key={g.id} value={g.id}>{g.label}</option>)}
+        </select>
+        <select className="select w-full" value={filters.level} onChange={setFilter("level")} aria-label="Experiencia">
+          <option value="">Toda experiencia</option>
+          {LEVELS.map((l) => <option key={l.id} value={l.id}>{l.label} ({l.hint})</option>)}
+        </select>
+        <select className="select w-full" value={filters.age} onChange={setFilter("age")} aria-label="Edad">
+          <option value="">Todas las edades</option>
+          {AGES.map((a) => <option key={a.id} value={a.id}>{a.label}</option>)}
+        </select>
+        <select className="select w-full" value={filters.days} onChange={setFilter("days")} aria-label="Días por semana">
+          <option value="">Cualquier cantidad de días</option>
+          {DAY_OPTIONS.map((n) => <option key={n} value={n}>{n} días por semana</option>)}
+        </select>
+      </div>
+
+      {hasFilters && (
+        <p className="text-sm text-base-content/60" aria-live="polite">
+          {visible.length} rutina{visible.length === 1 ? "" : "s"} con estos filtros.{" "}
+          <button className="link" onClick={() => setFilters(NO_FILTERS)}>Limpiar filtros</button>
+        </p>
+      )}
+
+      {visible.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {visible.map((r) => <RoutineCard key={r.id} routine={r} isActive={active?.routine.id === r.id} onOpen={openDetail} />)}
+        </div>
+      ) : (
+        <div className="card bg-base-100 shadow-sm">
+          {tab === "propia" && !hasFilters ? (
+            <EmptyState icon="routines" title="Todavía no armaste rutinas propias" description="Muy pronto vas a poder crear tus rutinas con los ejercicios de la lista." />
+          ) : (
+            <EmptyState icon="search" title="No hay rutinas con esos filtros" description="Probá quitando algún filtro.">
+              <button className="btn btn-sm" onClick={() => setFilters(NO_FILTERS)}>Limpiar filtros</button>
+            </EmptyState>
+          )}
+        </div>
+      )}
 
       <Panel title="Plan semanal">
-        <ul className="list">
-          {weekDays.map((d) => (
-            <li key={d} className="list-row items-center">
-              <span className="w-24 font-medium">{d}</span>
-              <span className="text-base-content/40">Descanso</span>
-              <button className="btn btn-xs btn-ghost">Asignar</button>
-            </li>
-          ))}
-        </ul>
+        {active ? (
+          <ul className="list">
+            {active.week.map(({ weekday, dayIndex }) => (
+              <li key={weekday} className="list-row items-center">
+                <span className="w-24 font-medium">{WEEKDAYS[weekday].label}</span>
+                {dayIndex === null ? (
+                  <span className="text-base-content/40">Descanso</span>
+                ) : (
+                  <span>{active.routine.days[dayIndex].name} <span className="text-sm text-base-content/50">· {active.routine.days[dayIndex].exercises.length} ejercicios</span></span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-base-content/60">Elegí una rutina y tocá «Usar esta rutina» para ver acá qué te toca cada día.</p>
+        )}
       </Panel>
-    </section>
-  );
-}
 
-function RoutineCard({ name, category, days, exercises = 0, minutes = 0, progress = 0 }) {
-  return (
-    <div className="card min-h-56 bg-base-100 shadow-sm">
-      <div className="card-body">
-        <div className="flex items-start justify-between">
-          <span className="badge badge-ghost badge-sm">{category ?? "Sin categoría"}</span>
-          <span className="text-xs text-base-content/40">{days ?? "—"} días</span>
-        </div>
-        <h2 className={`card-title ${name ? "" : "text-base-content/40"}`}>{name ?? "Rutina sin nombre"}</h2>
-        <div className="flex gap-4 text-sm text-base-content/50">
-          <span className="flex items-center gap-1"><Icon name="dumbbell" className="size-4" />{exercises} ejercicios</span>
-          <span className="flex items-center gap-1"><Icon name="clock" className="size-4" />{minutes} min</span>
-        </div>
-        <progress className="progress mt-auto" value={progress} max="100" />
-        <div className="card-actions justify-end">
-          <button className="btn btn-sm btn-ghost">Editar</button>
-          <button className="btn btn-sm"><Icon name="play" className="size-3.5" />Empezar</button>
-        </div>
-      </div>
-    </div>
+      <RoutineDetailModal
+        ref={detailRef}
+        openKey={selected.n}
+        routine={selected.id ? byId[selected.id] ?? null : null}
+        exercisesById={exercisesById}
+        active={active}
+        onActivate={activate}
+        onDeactivate={deactivate}
+      />
+    </section>
   );
 }

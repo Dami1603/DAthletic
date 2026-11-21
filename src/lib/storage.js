@@ -68,4 +68,6 @@ export const KEYS = {
   theme: "dathletic-theme", // se mantiene la clave original para no perder el tema ya elegido
   introDismissed: "dathletic:intro-dismissed",
   customExercises: "dathletic:custom-exercises",
+  activeRoutine: "dathletic:active-routine",
+  customRoutines: "dathletic:custom-routines",
 };

@@ -2,6 +2,14 @@
 
 Decisiones tomadas por la persona sobre DAthletic. La más reciente arriba.
 
+## 2026-11-21 — Fase 2: rutinas
+- **Rutinas famosas:** programas clásicos populares **y** rutinas «inspiradas en» figuras públicas, cada una con
+  aviso «basada en lo que contó en entrevistas o libros, no oficial», adaptadas a los ejercicios de la app.
+- **Edad:** rangos **18–39 · 40–59 · 60+** (solo adultos).
+- **Rutinas propias:** sí, lista base **y** rutinas propias armadas con ejercicios de la lista, guardadas en el navegador.
+- **Días:** se **activa** una rutina y se eligen los días de la semana; Inicio muestra qué toca hoy y la semana.
+- Se hace por FTD en dos partes: 2A (catálogo, filtros, activar y días, Inicio) y 2B (rutinas propias).
+
 ## 2026-11-21 — Guía, logo en modo oscuro y fase 1
 - **Guía de ideas:** `Guia DAthletic.docx` queda **solo en la computadora**, fuera del repo público (está en `.gitignore`).
 - **Logo en modo oscuro:** se deja como está por ahora (contraste bajo de las partes más oscuras, ya medido).
