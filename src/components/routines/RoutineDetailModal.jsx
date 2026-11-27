@@ -2,7 +2,8 @@ import { useState } from "react";
 import Icon from "../Icon.jsx";
 import WeekdayPicker from "./WeekdayPicker.jsx";
 import { RoutineBadges } from "./RoutineCard.jsx";
-import { AGES, WEEKDAYS, labelOf, suggestedWeekdays } from "../../lib/routines.js";
+import { AGES, WEEKDAYS, formatDuration, labelOf, sessionSummary, suggestedWeekdays } from "../../lib/routines.js";
+import { muscleById } from "../../data/muscles.js";
 
 const formatRest = (s) => (s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} min` : `${s} s`);
 const dayList = (weekdays) => weekdays.map((d) => WEEKDAYS[d].short).join(", ");
@@ -44,6 +45,40 @@ export default function RoutineDetailModal({ ref, openKey, routine, exercisesByI
   );
 }
 
+/** Tiempo estimado y series de la sesión; las series abren un desplegable con las series por músculo. */
+function SessionSummary({ day, exercisesById }) {
+  const { sets, seconds, muscles } = sessionSummary(day, exercisesById);
+  return (
+    <div className="flex items-center gap-3 text-sm">
+      <span className="flex items-center gap-1 text-base-content/70" title="Tiempo estimado: cada serie más su descanso">
+        <Icon name="clock" className="size-4" />
+        {formatDuration(seconds)}
+      </span>
+      <div className="dropdown dropdown-end">
+        <div tabIndex={0} role="button" className="btn btn-xs" aria-label={`${sets} series. Ver series por músculo`}>
+          {sets} series ▾
+        </div>
+        <div tabIndex={0} className="dropdown-content z-20 mt-1 w-56 rounded-box border border-base-300 bg-base-100 p-3 shadow-lg">
+          <p className="mb-2 text-xs font-semibold text-base-content/60">Series por músculo</p>
+          {muscles.length ? (
+            <ul className="space-y-1">
+              {muscles.map((m) => (
+                <li key={m.id} className="flex justify-between gap-2">
+                  <span>{muscleById[m.id]?.label ?? m.id}</span>
+                  <span className="font-semibold">{m.sets}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-base-content/60">Sin datos de músculos.</p>
+          )}
+          <p className="mt-2 text-xs text-base-content/50">Cuenta el músculo principal de cada ejercicio.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RoutineDetail({ routine, exercisesById, active, onActivate, onDeactivate, onEdit, onDelete, onClose }) {
   const isActive = active?.routine.id === routine.id;
   const n = routine.days.length;
@@ -82,9 +117,12 @@ function RoutineDetail({ routine, exercisesById, active, onActivate, onDeactivat
       <div className="space-y-4">
         {routine.days.map((day, i) => (
           <section key={i} className="rounded-box border border-base-300">
-            <h4 className="border-b border-base-300 px-4 py-2 font-semibold">
-              <span className="text-base-content/50">Sesión {i + 1} · </span>{day.name}
-            </h4>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-base-300 px-4 py-2">
+              <h4 className="font-semibold">
+                <span className="text-base-content/50">Sesión {i + 1} · </span>{day.name}
+              </h4>
+              <SessionSummary day={day} exercisesById={exercisesById} />
+            </div>
             <div className="overflow-x-auto">
               <table className="table table-sm">
                 <thead>

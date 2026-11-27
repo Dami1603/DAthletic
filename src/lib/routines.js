@@ -110,6 +110,50 @@ export function buildWeek(routine, weekdays) {
   });
 }
 
+// ---------- Resumen de una sesión ----------
+
+const SECONDS_PER_REP = 3;
+const DEFAULT_SET_SECONDS = 40;
+
+/**
+ * Duración estimada de una serie, en segundos, a partir del texto de repeticiones.
+ * «30 s» o «30–45 s» = tiempo (promedio del rango). «8–10» = repeticiones (promedio) × 3 s. Otro texto = 40 s.
+ */
+export function setSeconds(reps) {
+  const text = String(reps);
+  const nums = (text.match(/\d+(?:[.,]\d+)?/g) ?? []).map((n) => Number(n.replace(",", "."))).slice(0, 2);
+  if (nums.length === 0) return DEFAULT_SET_SECONDS;
+  const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+  return /\d\s*(s|seg|segundos?)\b/i.test(text) ? avg : avg * SECONDS_PER_REP;
+}
+
+/**
+ * Series totales, tiempo estimado (cada serie + su descanso; sin descanso tras la última serie de la sesión)
+ * y series por músculo (cuenta solo los músculos principales de cada ejercicio), de mayor a menor.
+ */
+export function sessionSummary(day, exercisesById) {
+  let sets = 0;
+  let seconds = 0;
+  let lastRest = 0;
+  const perMuscle = new Map();
+  for (const x of day.exercises) {
+    sets += x.sets;
+    seconds += x.sets * (setSeconds(x.reps) + x.rest);
+    lastRest = x.rest;
+    for (const m of exercisesById[x.exerciseId]?.primary ?? []) perMuscle.set(m, (perMuscle.get(m) ?? 0) + x.sets);
+  }
+  if (sets > 0) seconds -= lastRest;
+  const muscles = [...perMuscle].map(([id, n]) => ({ id, sets: n })).sort((a, b) => b.sets - a.sets);
+  return { sets, seconds, muscles };
+}
+
+/** «≈ 45 min» / «≈ 1 h 10 min», redondeado a 5 minutos (mínimo 5). */
+export function formatDuration(seconds) {
+  const min = Math.max(5, Math.round(seconds / 60 / 5) * 5);
+  const h = Math.floor(min / 60);
+  return h ? `≈ ${h} h${min % 60 ? ` ${min % 60} min` : ""}` : `≈ ${min} min`;
+}
+
 // ---------- Rutinas propias ----------
 
 export const MAX_DAYS = 7;
