@@ -10,3 +10,4 @@
   - [Fase 2A — Catálogo de rutinas](ftd/fase2a-catalogo-de-rutinas.md)
   - [Fase 2B — Rutinas propias](ftd/fase2b-rutinas-propias.md)
   - [Resumen de sesión: tiempo y series por músculo](ftd/resumen-de-sesion.md)
+  - [App Android con Capacitor y Play Store](ftd/app-android-capacitor.md)

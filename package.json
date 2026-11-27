@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android": "vite build && cap sync android && cap open android",
+    "android:sync": "vite build && cap sync android"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.3",
     "@tailwindcss/vite": "^4.3.5",
     "@vitejs/plugin-react": "^6.3.0",
     "daisyui": "^5.8.2",
@@ -16,6 +19,8 @@
     "vite": "^8.3.8"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.3",
+    "@capacitor/core": "^8.6.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router": "^8.5.2"

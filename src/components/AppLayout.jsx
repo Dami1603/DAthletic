@@ -36,7 +36,7 @@ function Header() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-base-300 bg-base-100/85 backdrop-blur">
+    <header className="sticky top-0 z-30 pt-[env(safe-area-inset-top)] border-b border-base-300 bg-base-100/85 backdrop-blur">
       <div className="navbar mx-auto max-w-6xl gap-2 px-4 lg:px-8">
         <div className="navbar-start">
           <div className="lg:hidden"><Logo size="sm" /></div>
