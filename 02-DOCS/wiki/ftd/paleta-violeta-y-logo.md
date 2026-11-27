@@ -82,6 +82,15 @@ Evidencia:
   ~70 % de los píxeles opacos del logo quedan por debajo de 1.5:1. Los logos están exentos de WCAG 1.4.11.
   Decisión pendiente de la persona: dejarlo o hacer una versión clara para modo oscuro.
 
+### Actualización: nuevo logo (emblema circular con bíceps violeta) y fondo azul
+- [x] Logo nuevo circular integrado reemplazando el anterior.
+- [x] Bordes blancos exteriores removidos (esquinas con alfa 0, antialiasing en el contorno del círculo sin halo blanco).
+- [x] Fondo circular azul removido a pedido: el logo pasa a mostrar únicamente el bíceps posando sobre fondo transparente.
+- [x] Actualizados `logo.png` y `logo-sin-fondo.png` (1024×1024), `public/logo.png` (256×256) y `public/favicon.png` (64×64) aumentando la escala del bíceps a ~72% del marco visual para mayor presencia y equilibrio junto al texto.
+- [x] `public/apple-touch-icon.png` (180×180 con fondo sólido `#11192C` y bíceps centrado).
+- [x] Modo oscuro actualizado: fondo (`base-200`) con el azul del logo `#11192C`; header y apartados (`base-100`) ajustados a `oklch(25% 0.04 266)` (`#192135`) para un contraste más suave y menos claro, manteniendo la distinción del fondo.
+
+- [x] Revisión visual de la persona (2026-11-27): conforme con logo y estética. Evidencia: `npm run build` sin errores.
+
 ## Next
-Revisión visual de la persona (`npm run dev`). Decidir si el logo necesita versión para modo oscuro.
-Si quiere los tonos exactos de coolors, pegar el export de esa página y reemplazar la escala.
+Cerrado. Pendiente aparte: elegir el nombre definitivo de la app (ver `decisiones-producto.md`).

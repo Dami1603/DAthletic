@@ -46,21 +46,21 @@
 @plugin "daisyui/theme" {
   name: "dathletic-dark";
   default: false;
-  prefersdark: false;
+  prefersdark: true;
   color-scheme: dark;
 
-  --color-base-100: oklch(21% 0.012 305);
-  --color-base-200: oklch(18% 0.012 305);
-  --color-base-300: oklch(27% 0.018 305);
-  --color-base-content: oklch(94% 0.01 305);
+  --color-base-100: oklch(25% 0.04 266);
+  --color-base-200: #11192c;
+  --color-base-300: oklch(30% 0.038 266);
+  --color-base-content: oklch(95% 0.01 266);
   --color-primary: #b157fe;
-  --color-primary-content: oklch(18% 0.03 305);
+  --color-primary-content: oklch(18% 0.03 266);
   --color-secondary: oklch(30% 0.08 305);
   --color-secondary-content: #d7b6fd;
   --color-accent: #c184ff;
   --color-accent-content: #400a66;
-  --color-neutral: oklch(32% 0.02 305);
-  --color-neutral-content: oklch(96% 0.005 305);
+  --color-neutral: oklch(31% 0.035 266);
+  --color-neutral-content: oklch(96% 0.005 266);
   --color-info: oklch(70% 0.14 235);
   --color-info-content: oklch(18% 0.02 235);
   --color-success: oklch(70% 0.16 150);

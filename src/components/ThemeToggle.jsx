@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Icon from "./Icon.jsx";
 import { KEYS, usePersistentState } from "../lib/storage.js";
 
@@ -7,6 +8,10 @@ const isTheme = (v) => v === LIGHT || v === DARK;
 
 export default function ThemeToggle() {
   const [theme, setTheme] = usePersistentState(KEYS.theme, LIGHT, isTheme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   return (
     <label className="btn btn-ghost btn-circle swap swap-rotate" aria-label="Cambiar tema">

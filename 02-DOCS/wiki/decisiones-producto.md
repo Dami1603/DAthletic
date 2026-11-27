@@ -2,6 +2,26 @@
 
 Decisiones tomadas por la persona sobre DAthletic. La más reciente arriba.
 
+## 2026-11-27 — Logo y estética aprobados; nombre provisional
+- **Aprobado:** la persona revisó la app y está conforme con el logo (bíceps sin círculo) y la estética del modo oscuro.
+- **Nombre:** «DAthletic» es **provisional**. A la persona no le termina de cerrar; queda pendiente elegir el definitivo.
+
+## 2026-11-23 — Logo con bíceps aislado (sin fondo circular)
+- **Logo:** se quita el fondo circular azul oscuro del logo para que quede únicamente la silueta del bíceps posando con fondo transparente.
+- **Tamaño ajustado:** se escala el bíceps a ~72% del marco visual (aumentando su presencia frente a la escala inicial del 52% pero sin saturar los márgenes), logrando una proporción equilibrada y legible junto a la tipografía `DAthletic`.
+- **Archivos actualizados:** `logo.png`, `logo-sin-fondo.png`, `public/logo.png` (256×256) y `public/favicon.png` (64×64). `public/apple-touch-icon.png` mantiene fondo sólido `#11192C` con el bíceps en su nueva escala para iOS.
+
+## 2026-11-23 — Fondo y superficies en modo oscuro alineados al logo
+- **Fondo (base-200):** `#11192C` (el azul oscuro del logo).
+- **Superficies (base-100: header, dock, tarjetas, modales):** ajustadas a `oklch(25% 0.04 266)` (`#192135`), un tono más tenue y oscuro que el intento previo (`27.5%`), pero manteniendo la elevación justa sobre el fondo.
+- **Bordes y divisores (base-300):** ajustados a `oklch(30% 0.038 266)` para marcar los límites de forma suave y no estridente.
+
+## 2026-11-23 — Actualización de logo (emblema circular)
+- **Nuevo logo:** reemplazado por el emblema circular con bíceps/brazo violeta sobre fondo azul oscuro (#11192C).
+- **Eliminación de bordes blancos:** esquinas transparentes (alfa 0) en `logo.png`, `logo-sin-fondo.png`, `public/logo.png` y `public/favicon.png`.
+- **Icono iOS:** `public/apple-touch-icon.png` generado con fondo sólido `#11192C` para evitar esquinas negras/blancas en iOS.
+- **Alternativa sin círculo:** generado `logo-solo-brazo.png` con únicamente el brazo violeta recortado.
+
 ## 2026-11-21 — Fase 2: rutinas
 - **Rutinas famosas:** programas clásicos populares **y** rutinas «inspiradas en» figuras públicas, cada una con
   aviso «basada en lo que contó en entrevistas o libros, no oficial», adaptadas a los ejercicios de la app.
